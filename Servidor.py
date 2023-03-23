@@ -3,7 +3,8 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Para las minas un doble random, un columna y otro fila, esto dentro de un for de 10 para crear las 10 minas ps
+#Muñoz González Daniel Aurelio
+#Aplicación que simula el juego de busca minas con dos máquinas comunicándose entre sí
 
 # Cambiamos la IP por la del dispositivo o la de la máquina virtual según queramos
 HOST = "127.0.0.1"  # Direccion de la interfaz de loopback estándar (localhost)
