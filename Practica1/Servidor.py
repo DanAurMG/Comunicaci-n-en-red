@@ -7,17 +7,17 @@ import matplotlib.pyplot as plt
 #Aplicación que simula el juego de busca minas con dos máquinas comunicándose entre sí
 
 # Cambiamos la IP por la del dispositivo o la de la máquina virtual según queramos
-#HOST = "127.0.0.1"  # Direccion de la interfaz de loopback estándar (localhost)
+HOST = "127.0.0.1"  # Direccion de la interfaz de loopback estándar (localhost)
 # Puerto que usa el cliente  (los puertos sin provilegios son > 1023)
 PORT = 65432
 buffer_size = 1024
 
-
+"""
 host_name = socket.gethostname()
 ip_address = socket.gethostbyname(host_name)
 print(ip_address)
 HOST = ip_address
-
+"""
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPServerSocket:
     TCPServerSocket.bind((HOST, PORT))
