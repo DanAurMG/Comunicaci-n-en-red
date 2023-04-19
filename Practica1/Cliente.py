@@ -69,7 +69,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPClientSocket:
                 data = TCPClientSocket.recv(buffer_size)
                 info = str(data)[2:(len(str(data)) - 1)]
                 print("Estuvo conectado: ", info, " segundos.")
-                exit()
+                TCPClientSocket.close()
     #Procedimiento en caso de seleccionar avanzado
     if(mensaje == "avanzado" or mensaje == "Avanzado"):
         # Creando el tablero
@@ -99,7 +99,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPClientSocket:
                 data = TCPClientSocket.recv(buffer_size)
                 info = str(data)[2:(len(str(data)) - 1)]
                 print("Estuvo conectado: ", info, " segundos.")
-                exit()
+                TCPClientSocket.close()
                 
             if not data:
                 print("No hubo datos :(")
