@@ -1,9 +1,7 @@
 import socket
-import pickle
 import time
 import threading
 import numpy as np
-import matplotlib.pyplot as plt
 
 #HOST = "172.100.85.114"
 HOST = "127.0.0.1"  # Direccion de la interfaz de loopback estándar (localhost)
@@ -11,34 +9,28 @@ PORT = 65432  # Puerto que usa el cliente  (los puertos sin provilegios son > 10
 buffer_size = 1024
 
 def servirPorSiempre(socketTcp, listaconexiones):
-    print("Entramos en servir por siempre")
     try:
         while True:
             client_conn, client_addr = socketTcp.accept()
             print("Conectado a", client_addr)
             listaconexiones.append(client_conn)
-            print("Despues de esto se debería ejecutar e juego")
             thread_read = threading.Thread(target=juego, args=[client_conn, client_addr])
             thread_read.start()
-            print("Despues de esto se debería ejecutar la gestión de conexiones")
             gestion_conexiones(listaConexiones)
     except Exception as e:
         print(e)
 
 def gestion_conexiones(listaconexiones):
-    print("Entramos en la gestión de conexiones")
     for conn in listaconexiones:
         if conn.fileno() == -1:
             listaconexiones.remove(conn)
-    print("hilos activos:", threading.active_count())
-    print("enum", threading.enumerate())
-    print("conexiones: ", len(listaconexiones))
+    print("Hilos activos:", threading.active_count())
+    print("Enumerar", threading.enumerate())
+    print("Tamaño y lista de conexiones: ", len(listaconexiones))
     print(listaconexiones)
-    print("Salimos de la gestión de conexiones")
 
 
 def juego(Client_conn, Client_addr):
-    print("Entro en el juego")
     try:
         cur_thread = threading.current_thread()
         print("Conectado a", Client_addr)
@@ -65,17 +57,19 @@ def juego(Client_conn, Client_addr):
 
                 # Creando el tablero
                 print("Creando tablero nivel principiante")
-                plt.figure(figsize=(5, 5))
                 tablero = np.zeros((9, 9))
                 minas = np.zeros(9)
                 for i in range(0, 10):
+                    # for j in range (10):
+                    #     print("-\t")
+                    # print("\n")
                     fila = np.random.randint(0, 9)
                     col = np.random.randint(0, 9)
                     tablero[fila, col] = 1
                     minas[col] = fila
-                print(minas)
-                plt.pcolor(tablero, edgecolors='k', linewidths=4)
-                plt.savefig('TableroSP.png', dpi=300)
+                    print("Mina colocada en: ", fila, col)
+                
+                print(tablero)
 
                 time.sleep(3)
                 Client_conn.sendall(b"Tablero creado")
@@ -101,9 +95,9 @@ def juego(Client_conn, Client_addr):
                         Client_conn.sendall(bytes(str(fin-inicio),  "UTF-8"))
                         break
                     else:
-                        tablero[int(info[0]), int(info[1])] = 2
-                        plt.pcolor(tablero, edgecolors='k', linewidths=4)
-                        plt.savefig('TableroSP.png', dpi=300)
+                        tablero[int(info[0]), int(info[1])] = "8"
+                        print(tablero)               
+    
                         Client_conn.sendall(b"Okey")
                                                         
             elif(info == "avanzado" or info == "Avanzado"):
@@ -114,7 +108,6 @@ def juego(Client_conn, Client_addr):
                 #Aqui creamos la matriz y obtenemos la ubicación de las bombas para principiante   
                 #Creando el tablero
                 print("Creando tablero nivel avanzado")
-                plt.figure(figsize=(5, 5))
                 tablero = np.zeros((16,16))
                 minas = np.zeros(40)
                 for i in range(0 , 40):
@@ -122,8 +115,9 @@ def juego(Client_conn, Client_addr):
                     col = np.random.randint(0,15)
                     tablero[fila,col] = 1
                     minas[col] = fila
-                plt.pcolor(tablero, edgecolors='k', linewidths=4)
-                plt.savefig('TableroSA.png', dpi=300)
+                    print("Mina colocada en: ", fila, col)
+                
+                print(tablero)
                     
                 time.sleep(3)
                 Client_conn.sendall(b"Tablero creado")
@@ -148,9 +142,10 @@ def juego(Client_conn, Client_addr):
                         Client_conn.sendall(bytes(despedida,  "UTF-8"))
                         break
                     else:
-                        tablero[int(info[0:2]), int(info[2:4])] = 2
-                        plt.pcolor(tablero, edgecolors='k', linewidths=4)
-                        plt.savefig('TableroSA.png', dpi=300)
+                        tablero[int(info[0:2]), int(info[2:4])] = "8"
+                        print(tablero)
+    
+    
                         Client_conn.sendall(b"Okey")
             #Tiempo muerto entre conexión y conexión
             time.sleep(2) 
