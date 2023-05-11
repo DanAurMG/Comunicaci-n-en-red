@@ -3,6 +3,9 @@ import time
 import threading
 import numpy as np
 
+#Muñoz González Daniel Aurelio
+#Aplicación que simula el juego de busca minas con dos máquinas comunicándose entre sí con hilos y varios clientes
+
 #HOST = "172.100.85.114"
 HOST = "127.0.0.1"  # Direccion de la interfaz de loopback estándar (localhost)
 PORT = 65432  # Puerto que usa el cliente  (los puertos sin provilegios son > 1023)
@@ -32,6 +35,7 @@ def gestion_conexiones(listaconexiones):
 
 def juego(Client_conn, Client_addr):
     try:
+        #La siguiente línea podría utilizarse para obtener info más específica sobre el hilo específico de cada cliente
         cur_thread = threading.current_thread()
         print("Conectado a", Client_addr)
         inicio = time.time()
@@ -80,7 +84,8 @@ def juego(Client_conn, Client_addr):
                     # Si ya estamos jugando entrará jugar en principiante
                 while True:
                     time.sleep(3)
-                    print("Esperando el siguiente tiro...")
+                    print("Esperando el siguiente tiro de: ")
+                    print(cur_thread)                    
                     data = Client_conn.recv(buffer_size)
                     info = str(data)[2:(len(str(data)) - 1)]
                     print(info)
@@ -127,7 +132,8 @@ def juego(Client_conn, Client_addr):
                 #Si ya estamos jugando entrará jugar en principiante
                 while True:  
                     time.sleep(3)                 
-                    print("Esperando el siguiente tiro...")
+                    print("Esperando el siguiente tiro de: ")
+                    print(cur_thread)
                     data = Client_conn.recv(buffer_size)                    
                     info = str(data)[2:(len(str(data)) - 1)]
                     print(info)

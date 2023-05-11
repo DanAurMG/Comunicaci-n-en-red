@@ -3,7 +3,7 @@ import time
 import numpy as np
 
 #Muñoz González Daniel Aurelio
-#Aplicación que simula el juego de busca minas con dos máquinas comunicándose entre sí
+#Aplicación que simula el juego de busca minas con dos máquinas comunicándose entre sí con hilos y varios clientes
 
 # Cambiamos la IP por la del dispositivo o la de la máquina virtual según queramos el que sea el servidor
 #HOST = "192.168.1.93"  # The server's hostname or IP address
