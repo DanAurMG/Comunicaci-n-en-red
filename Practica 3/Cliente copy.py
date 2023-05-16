@@ -31,7 +31,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPClientSocket:
         print("Creando tablero nivel principiante")
         tablero = np.zeros((9, 9))
         while True:
-            print("Haga su tiro en formato de número de dos números (ab), donde a representa la fila mientras que b representa la columna (números 0-8)")
+            print("Haga su tiro en formato de número de dos números (xy), donde x representa la fila mientras que y representa la columna (números 0-8)")
             mensaje = input()
             TCPClientSocket.sendall(bytes(mensaje, "UTF-8"))
             data = TCPClientSocket.recv(buffer_size)
@@ -55,7 +55,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPClientSocket:
         print("Creando tablero nivel avanzado")
         tablero = np.zeros((16, 16))
         while True:
-            print("Haga su tiro en formato de dos números conformados por dos dígitos cada uno (aabb), donde aa representa la fila mientras que bb representa la columna (números 0-15)")
+            print("Haga su tiro en formato de dos números conformados por dos dígitos cada uno (xxyy), donde xx representa la fila mientras que yy representa la columna (números 0-15)")
             mensaje = input()
             TCPClientSocket.sendall(bytes(mensaje, "UTF-8"))
             data = TCPClientSocket.recv(buffer_size)

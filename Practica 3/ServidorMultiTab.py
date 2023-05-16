@@ -160,9 +160,26 @@ def juego(Client_conn, Client_addr):
         print(e)
     finally:
         Client_conn.close()
+        
+    
+    
+def Iniciar(dificultad):
+    if(dificultad == "principiante" or dificultad == "Principiante"):
+        #Creamos el tablero para principiantes
+        print("Principiante")
+    elif(dificultad == "avanzado" or dificultad == "Avanzado"):
+        #Creamos el tablero para avanzados  
+        print("Avanzado")
+    else:
+        input("Ingrese una dificultad válida, por favor")
+        dificultad = input("Puede ser principiante (9x9) o avanzado (40x40)")
+        Iniciar(dificultad)
+     
 
 listaConexiones = []
 numConn = input("Ingresa el numero de jugadores simultaneos:\n")
+dificultad = input("Ingrese su dficultad, puede ser principiante (9x9) o avanzado (40x40)")
+Iniciar(dificultad)
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPServerSocket:
     TCPServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
