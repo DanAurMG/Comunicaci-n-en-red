@@ -13,15 +13,16 @@ PORT = 65432
 buffer_size = 1024
 
 
-def servirPorSiempre(socketTcp, listaconexiones, tablero, dificultad):
+def servirPorSiempre(socketTcp, listaconexiones, tablero, dificultad, TCPServerSocket):
     try:
         while True:
             client_conn, client_addr = socketTcp.accept()
             print("Conectado a", client_addr)
             listaconexiones.append(client_conn)
             thread_read = threading.Thread(
-                target=juego, args=[client_conn, client_addr, tablero, dificultad])
+                target=juego, args=[client_conn, client_addr, tablero, dificultad, TCPServerSocket])
             thread_read.start()
+            time.sleep(2)
             gestion_conexiones(listaConexiones)
     except Exception as e:
         print(e)
@@ -31,28 +32,28 @@ def gestion_conexiones(listaconexiones):
     for conn in listaconexiones:
         if conn.fileno() == -1:
             listaconexiones.remove(conn)
-    print("Hilos activos:", threading.active_count())
-    print("Enumerar", threading.enumerate())
-    print("Tamaño y lista de conexiones: ", len(listaconexiones))
+    print("\nHilos activos:", threading.active_count())
+    print("\nEnumerar", threading.enumerate())
+    print("\nTamaño y lista de conexiones: ", len(listaconexiones))
     print(listaconexiones)
 
 
-def juego(Client_conn, Client_addr, tablero, dificultad):
+def juego(Client_conn, Client_addr, tablero, dificultad, TCPServerSocket):
     try:
-        print("Estamos jugando en ", dificultad)
+        print("Estamos jugando en ", dificultad, "\n")
         # La siguiente línea podría utilizarse para obtener info más específica sobre el hilo específico de cada cliente
         cur_thread = threading.current_thread()
-        print("Conectado a", Client_addr)
+        print("\nConectado a", Client_addr)
         inicio = time.time()
         print("Nuevo cliente detectado")
         # Mensaje de bienvenida
         # TODO: agregar el nivel de dificultad al mensaje de bienvenida
         Client_conn.sendall(b"Vamos a jugar buscaminas en dificultad: ")
         Client_conn.sendall(bytes(dificultad, "UTF-8"))
+        data = TCPServerSocket.recv(buffer_size)
         if not data:
             print("No hubo datos :(")
-        while True:
-            
+        while True:            
                 while True:
                     time.sleep(3)
                     print("Esperando el siguiente tiro de: ")
@@ -76,8 +77,7 @@ def juego(Client_conn, Client_addr, tablero, dificultad):
                         print(tablero)
 
                         Client_conn.sendall(b"Okey")
-
-            
+                                    
                 while True:
                     time.sleep(3)
                     print("Esperando el siguiente tiro de: ")
@@ -122,18 +122,6 @@ def Iniciar(dificultad):
             tablero[fila, col] = 1
             minas[col] = fila
             print("Mina colocada en: ", fila, col)
-        #Imprimimos el tablero recién creado
-        
-        # print(" ","\t",end="")
-        # for z in range(9):
-        #     print(z,"\t",end="")
-        # print("\n---------------------------------------------------------------------\n")
-        # for w in range(9):  
-        #     print(w, "|", "\t", end="")
-        #     for y in range(9):          
-        #         print(int(tablero[w][y]), "\t", end="")
-        #     print("\n")
-                        
 
     elif(dificultad == "avanzado" or dificultad == "Avanzado"):
         #Creamos el tablero para avanzados  
@@ -149,21 +137,11 @@ def Iniciar(dificultad):
             tablero[fila, col] = 1
             minas[col] = fila
             print("Mina colocada en: ", fila, col)
-        #Imprimimos el tablero recién creado
-        
-        # print(" ","\t",end="")
-        # for z in range(16):
-        #     print(z,"\t",end="")
-        # print("\n---------------------------------------------------------------------\n")
-        # for w in range(16):  
-        #     print(w, "|", "\t", end="")
-        #     for y in range(16):          
-        #         print(int(tablero[w][y]), "\t", end="")
-        #     print("\n")
+
     else:
-        input("Ingrese una dificultad válida, por favor")
+        print("Ingrese una dificultad válida, por favor")
         dificultad = input("Puede ser principiante (9x9) o avanzado (40x40)\n")
-        Iniciar(dificultad)
+        tablero = Iniciar(dificultad)
     
     return tablero    
 
@@ -172,10 +150,7 @@ listaConexiones = []
 numConn = input("Ingresa el numero de jugadores simultaneos:\n")
 dificultad = input("Ingrese su dficultad, puede ser principiante (9x9) o avanzado (40x40)\n")
 tablero = Iniciar(dificultad)
-# print("Abajo va el tablero obtenido")
-# z=0
-# w=0
-# y=0
+
 if (tablero.size == 81):
     print(" ", "\t", end="")
     for z in range(9):
@@ -203,4 +178,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPServerSocket:
     TCPServerSocket.listen(int(numConn))
     print("El servidor TCP está disponible y en espera de solicitudes")
     
-    servirPorSiempre(TCPServerSocket, listaConexiones, tablero, dificultad)
+    servirPorSiempre(TCPServerSocket, listaConexiones, tablero, dificultad, TCPServerSocket)
