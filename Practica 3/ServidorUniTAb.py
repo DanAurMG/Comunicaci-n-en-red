@@ -19,18 +19,19 @@ def servirPorSiempre(socketTcp, listaconexiones, tablero, dificultad, TCPServerS
             client_conn, client_addr = socketTcp.accept()
             print("Conectado a", client_addr)
             listaconexiones.append(client_conn)
-            thread_read = threading.Thread(
-                target=juego, args=[client_conn, client_addr, tablero, dificultad, TCPServerSocket])
-            thread_read.start()
-            time.sleep(2)
             gestion_conexiones(listaConexiones)
+            time.sleep(2)
+            thread_read = threading.Thread(target=juego, args=[client_conn, client_addr, tablero, dificultad, TCPServerSocket])
+            thread_read.start()
     except Exception as e:
+        print("Error aqui")
         print(e)
 
 
 def gestion_conexiones(listaconexiones):
     for conn in listaconexiones:
         if conn.fileno() == -1:
+            print("Ingue su")
             listaconexiones.remove(conn)
     print("\nHilos activos:", threading.active_count())
     print("\nEnumerar", threading.enumerate())
@@ -47,60 +48,50 @@ def juego(Client_conn, Client_addr, tablero, dificultad, TCPServerSocket):
         inicio = time.time()
         print("Nuevo cliente detectado")
         # Mensaje de bienvenida
-        # TODO: agregar el nivel de dificultad al mensaje de bienvenida
         Client_conn.sendall(b"Vamos a jugar buscaminas en dificultad: ")
         Client_conn.sendall(bytes(dificultad, "UTF-8"))
-        data = TCPServerSocket.recv(buffer_size)
-        if not data:
-            print("No hubo datos :(")
-        while True:            
-                while True:
-                    time.sleep(3)
-                    print("Esperando el siguiente tiro de: ")
-                    print(cur_thread)
-                    data = Client_conn.recv(buffer_size)
-                    info = str(data)[2:(len(str(data)) - 1)]
-                    print(info)
-                    if not data:
-                        print("No hubo datos :(")
-                    if (tablero[int(info[0]), int(info[1])]):
-                        Client_conn.sendall(b"Mina")
-                        print("El cliente pisó una mina")
-                        fin = time.time()
-                        despedida = "Estuvo conectado " + \
-                            str(fin-inicio) + " segundos."
-                        print(despedida)
-                        Client_conn.sendall(bytes(str(fin-inicio),  "UTF-8"))
-                        break
-                    else:
-                        tablero[int(info[0]), int(info[1])] = "8"
-                        print(tablero)
-
-                        Client_conn.sendall(b"Okey")
-                                    
-                while True:
-                    time.sleep(3)
-                    print("Esperando el siguiente tiro de: ")
-                    print(cur_thread)
-                    data = Client_conn.recv(buffer_size)
-                    info = str(data)[2:(len(str(data)) - 1)]
-                    print(info)
-                    if not data:
-                        print("No hubo datos :(")
-                    if (tablero[int(info[0:2]), int(info[2:4])]):
-                        Client_conn.sendall(b"Mina")
-                        print("El cliente pisó una mina")
-                        fin = time.time()
-                        despedida = "Estuvo conectado " + \
-                            str(fin-inicio) + " segundos."
-                        print(despedida)
-                        Client_conn.sendall(bytes(despedida,  "UTF-8"))
-                        break
-                    else:
-                        tablero[int(info[0:2]), int(info[2:4])] = "8"
-                        print(tablero)
-
-                        Client_conn.sendall(b"Okey")
+        # time.sleep(3)
+        while True:
+            print("Esperando el siguiente tiro: ")
+            data = Client_conn.recv(buffer_size)
+            print(cur_thread)
+            info = str(data)[2:(len(str(data)) - 1)]
+            print(info)
+            if not data:
+                print("No hubo datos :(")
+            if (tablero[int(info[0]), int(info[1])]):
+                Client_conn.sendall(b"Mina")
+                print("El cliente pisó una mina")
+                fin = time.time()
+                despedida = "Estuvo conectado " + \
+                    str(fin-inicio) + " segundos."
+                print(despedida)
+                Client_conn.sendall(bytes(str(fin-inicio),  "UTF-8"))
+                break
+            else:
+                tablero[int(info[0]), int(info[1])] = "8"
+                # print(tablero)
+                if (tablero.size == 81):
+                    print(" ", "\t", end="")
+                    for z in range(9):
+                        print(z, "\t", end="")
+                    print("\n---------------------------------------------------------------------\n")
+                    for w in range(9):
+                        print(w, "|", "\t", end="")
+                        for y in range(9):
+                            print(int(tablero[w][y]), "\t", end="")
+                        print("\n")
+                else:
+                    print(" ", "\t", end="")
+                    for z in range(16):
+                        print(z, "\t", end="")
+                    print("\n---------------------------------------------------------------------\n")
+                    for w in range(16):
+                        print(w, "|", "\t", end="")
+                        for y in range(16):
+                            print(int(tablero[w][y]), "\t", end="")
+                        print("\n")
+                Client_conn.sendall(b"Okey")
     except Exception as e:
         print(e)
     finally:
