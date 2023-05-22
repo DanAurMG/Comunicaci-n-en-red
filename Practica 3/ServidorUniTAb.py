@@ -24,14 +24,12 @@ def servirPorSiempre(socketTcp, listaconexiones, tablero, dificultad, TCPServerS
             thread_read = threading.Thread(target=juego, args=[client_conn, client_addr, tablero, dificultad, TCPServerSocket])
             thread_read.start()
     except Exception as e:
-        print("Error aqui")
         print(e)
 
 
 def gestion_conexiones(listaconexiones):
     for conn in listaconexiones:
         if conn.fileno() == -1:
-            print("Ingue su")
             listaconexiones.remove(conn)
     print("\nHilos activos:", threading.active_count())
     print("\nEnumerar", threading.enumerate())

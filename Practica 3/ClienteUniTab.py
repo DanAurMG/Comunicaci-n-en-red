@@ -39,11 +39,50 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPClientSocket:
             print(info)
             if (info == "Okey"):
                 tablero[int(mensaje[0]), int(mensaje[1])] = 8
-                print(tablero)
+                if (tablero.size == 81):
+                    print(" ", "\t", end="")
+                    for z in range(9):
+                        print(z, "\t", end="")
+                    print("\n---------------------------------------------------------------------\n")
+                    for w in range(9):
+                        print(w, "|", "\t", end="")
+                        for y in range(9):
+                            print(int(tablero[w][y]), "\t", end="")
+                        print("\n")
+                else:
+                    print(" ","\t",end="")
+                    for z in range(16):
+                        print(z,"\t",end="")
+                    print("\n---------------------------------------------------------------------\n")
+                    for w in range(16):  
+                        print(w, "|", "\t", end="")
+                        for y in range(16):          
+                            print(int(tablero[w][y]), "\t", end="")
+                        print("\n")
+            
             if (info == "Mina"):
                 print("Has perdido")
                 tablero[int(mensaje[0]), int(mensaje[1])] = 1
-                print(tablero)
+                if (tablero.size == 81):
+                    print(" ", "\t", end="")
+                    for z in range(9):
+                        print(z, "\t", end="")
+                    print("\n---------------------------------------------------------------------\n")
+                    for w in range(9):
+                        print(w, "|", "\t", end="")
+                        for y in range(9):
+                            print(int(tablero[w][y]), "\t", end="")
+                        print("\n")
+                else:
+                    print(" ","\t",end="")
+                    for z in range(16):
+                        print(z,"\t",end="")
+                    print("\n---------------------------------------------------------------------\n")
+                    for w in range(16):  
+                        print(w, "|", "\t", end="")
+                        for y in range(16):          
+                            print(int(tablero[w][y]), "\t", end="")
+                        print("\n")
                 data = TCPClientSocket.recv(buffer_size)
                 info = str(data)[2:(len(str(data)) - 1)]
                 print("Estuvo conectado: ", info, " segundos.")
@@ -64,7 +103,27 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPClientSocket:
             
             if (info == "Okey"):
                 tablero[int(mensaje[0:2]), int(mensaje[2:4])] = 8
-                print(tablero)
+                print("\n")
+                if (tablero.size == 81):
+                    print(" ", "\t", end="")
+                    for z in range(9):
+                        print(z, "\t", end="")
+                    print("\n---------------------------------------------------------------------\n")
+                    for w in range(9):
+                        print(w, "|", "\t", end="")
+                        for y in range(9):
+                            print(int(tablero[w][y]), "\t", end="")
+                        print("\n")
+                else:
+                    print(" ","\t",end="")
+                    for z in range(16):
+                        print(z,"\t",end="")
+                    print("\n----------------------------------------------------------------------------------------------------------------\n")
+                    for w in range(16):  
+                        print(w, "|", "\t", end="")
+                        for y in range(16):          
+                            print(int(tablero[w][y]), "\t", end="")
+                        print("\n")
             if (info == "Mina"):
                 print("Has perdido")
                 tablero[int(mensaje[0:2]), int(mensaje[2:4])] = 1
